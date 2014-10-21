@@ -376,39 +376,39 @@
 
                 fullscreen: {
                     title  : 'Fullscreen',
-                    label  : '<i class="uk-icon-expand"></i>'
+                    label  : '<i class="uk-icon-rz-expand"></i>'
                 },
                 bold : {
                     title  : 'Bold',
-                    label  : '<i class="uk-icon-bold"></i>'
+                    label  : '<i class="uk-icon-rz-bold"></i>'
                 },
                 italic : {
                     title  : 'Italic',
-                    label  : '<i class="uk-icon-italic"></i>'
+                    label  : '<i class="uk-icon-rz-italic"></i>'
                 },
                 strike : {
                     title  : 'Strikethrough',
-                    label  : '<i class="uk-icon-strikethrough"></i>'
+                    label  : '<i class="uk-icon-rz-strikethrough"></i>'
                 },
                 blockquote : {
                     title  : 'Blockquote',
-                    label  : '<i class="uk-icon-quote-right"></i>'
+                    label  : '<i class="uk-icon-rz-quote"></i>'
                 },
                 link : {
                     title  : 'Link',
-                    label  : '<i class="uk-icon-link"></i>'
+                    label  : '<i class="uk-icon-rz-link"></i>'
                 },
                 image : {
                     title  : 'Image',
-                    label  : '<i class="uk-icon-picture-o"></i>'
+                    label  : '<i class="uk-icon-rz-documents"></i>'
                 },
                 listUl : {
                     title  : 'Unordered List',
-                    label  : '<i class="uk-icon-list-ul"></i>'
+                    label  : '<i class="uk-icon-rz-unordered-list"></i>'
                 },
                 listOl : {
                     title  : 'Ordered List',
-                    label  : '<i class="uk-icon-list-ol"></i>'
+                    label  : '<i class="uk-icon-rz-ordered-list"></i>'
                 }
 
             });
