@@ -355,9 +355,12 @@
                 '<div class="uk-htmleditor-navbar-flip">',
                     '<ul class="uk-htmleditor-navbar-nav">',
                         '<li class="uk-htmleditor-button-code"><a class="uk-htmleditor-button-link-code-preview uk-htmleditor-button-link-code" title="Markdown" data-uk-tooltip="{animation:true}">{:lblCodeview}</a></li>',
-                        '<li class="uk-htmleditor-button-preview"><a class="uk-htmleditor-button-link-code-preview uk-htmleditor-button-link-preview" title="Preview" data-uk-tooltip="{animation:true}"><i class="uk-icon-rz-visibility"></i></a></li>', // {:lblPreview}
-                        '<li class="uk-htmleditor-button-fullscreen"><a class="uk-htmleditor-button-link-fullscreen" data-htmleditor-button="fullscreen" title="Fullscreen"  data-uk-tooltip="{animation:true}"><i class="uk-icon-expand"></i></a></li>',
+                        '<li class="uk-htmleditor-button-preview"><a class="uk-htmleditor-button-link-code-preview uk-htmleditor-button-link-preview" title="Preview" data-uk-tooltip="{animation:true}"><i class="uk-icon-rz-visibility-mini"></i></a></li>', // {:lblPreview}
+                        '<li class="uk-htmleditor-button-fullscreen"><a class="uk-htmleditor-button-link-fullscreen" data-htmleditor-button="fullscreen" title="Fullscreen"  data-uk-tooltip="{animation:true}"><i class="uk-icon-rz-fullscreen"></i></a></li>',
                     '</ul>',
+                    '<div class="uk-htmleditor-count">',
+                        '<span class="count-current"></span> / <span class="count-limit"></span>',
+                    '</div>',
                 '</div>',
             '</div>',
             '<div class="uk-htmleditor-content">',
@@ -375,32 +378,28 @@
             editor.addButtons({
 
                 h2: {
-                    title  : 'H2',
+                    title  : 'Headline 2',
                     label  : '<i class="uk-icon-rz-h2"></i>'
                 },
                 h3: {
-                    title  : 'H3',
+                    title  : 'Headline 3',
                     label  : '<i class="uk-icon-rz-h3"></i>'
                 },
                 h4: {
-                    title  : 'H4',
-                    label  : '<i class="uk-icon-rz-h4"></i>'
-                },
-                h4: {
-                    title  : 'H4',
+                    title  : 'Headline 4',
                     label  : '<i class="uk-icon-rz-h4"></i>'
                 },
                 h5: {
-                    title  : 'H5',
+                    title  : 'Headline 5',
                     label  : '<i class="uk-icon-rz-h5"></i>'
                 },
                 h6: {
-                    title  : 'H6',
+                    title  : 'Headline 6',
                     label  : '<i class="uk-icon-rz-h6"></i>'
                 },
                 fullscreen: {
                     title  : 'Fullscreen',
-                    label  : '<i class="uk-icon-rz-expand"></i>'
+                    label  : '<i class="uk-icon-rz-fullscreen"></i>'
                 },
                 bold : {
                     title  : 'Bold',
@@ -641,7 +640,7 @@
 
             function enableMarkdown() {
                 editor.editor.setOption('mode', 'gfm');
-                editor.htmleditor.find('.uk-htmleditor-button-code a').html('<i class="uk-icon-rz-visibility"></i>');
+                editor.htmleditor.find('.uk-htmleditor-button-code a').html('<i class="uk-icon-rz-visibility-mini"></i>');
             }
 
             function addAction(name, replace, mode) {
