@@ -584,7 +584,7 @@
             try {
 
                 var observer = new UI.support.mutationobserver(UI.Utils.debounce(function(mutations) {
-                    fn.apply(element, []);
+                    //fn.apply(element, []);
                     $element.trigger('changed.uk.dom');
                 }, 50));
 
