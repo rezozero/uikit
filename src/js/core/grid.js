@@ -11,6 +11,21 @@
             "row"    : true
         },
 
+        boot: function() {
+
+            // init code
+            UI.ready(function(context) {
+
+                UI.$("[data-@-grid-match]", context).each(function() {
+                    var grid = UI.$(this), obj;
+
+                    if (!grid.data("gridMatchHeight")) {
+                        obj = UI.gridMatchHeight(grid, UI.Utils.options(grid.attr("data-@-grid-match")));
+                    }
+                });
+            });
+        },
+
         init: function() {
 
             var $this = this;
@@ -34,13 +49,13 @@
                 return UI.Utils.debounce(fn, 50);
             })());
 
-            UI.$html.on("uk.dom.changed", function(e) {
+            UI.$html.on("changed.uk.dom", function(e) {
                 $this.columns  = $this.element.children();
                 $this.elements = $this.options.target ? $this.find($this.options.target) : $this.columns;
                 $this.match();
             });
 
-            this.on("uk.check.display", function(e) {
+            this.on("display.uk.check", function(e) {
                 if(this.element.is(":visible")) this.match();
             }.bind(this));
 
@@ -123,7 +138,22 @@
     UI.component('gridMargin', {
 
         defaults: {
-            "cls": "uk-grid-margin"
+            "cls": "@-grid-margin"
+        },
+
+        boot: function() {
+
+            // init code
+            UI.ready(function(context) {
+
+                UI.$("[data-@-grid-margin]", context).each(function() {
+                    var grid = UI.$(this), obj;
+
+                    if (!grid.data("gridMargin")) {
+                        obj = UI.gridMargin(grid, UI.Utils.options(grid.attr("data-@-grid-margin")));
+                    }
+                });
+            });
         },
 
         init: function() {
@@ -134,21 +164,4 @@
         }
     });
 
-
-    // init code
-    UI.ready(function(context) {
-
-        $("[data-uk-grid-match],[data-uk-grid-margin]", context).each(function() {
-            var grid = $(this), obj;
-
-            if (grid.is("[data-uk-grid-match]") && !grid.data("gridMatchHeight")) {
-                obj = UI.gridMatchHeight(grid, UI.Utils.options(grid.attr("data-uk-grid-match")));
-            }
-
-            if (grid.is("[data-uk-grid-margin]") && !grid.data("gridMargin")) {
-                obj = UI.gridMargin(grid, UI.Utils.options(grid.attr("data-uk-grid-margin")));
-            }
-        });
-    });
-
-})(jQuery, jQuery.UIkit);
+})(jQuery, UIkit);

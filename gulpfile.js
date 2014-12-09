@@ -21,15 +21,13 @@ var pkg         = require('./package.json'),
     browserSync = require('browser-sync'),
     Promise     = require('promise');
 
+var watchmode  = gutil.env._.length && gutil.env._[0] == 'watch',
+    watchCache = {},
+    getThemes  = function(theme, all){
 
-var themes = (function(){
+        var list = [], themefolders = ["themes"];
 
-        var list  = [],
-            theme = gutil.env.t || gutil.env.theme || false;
-
-        var themefolders = ["themes"];
-
-        if (gutil.env.all || gutil.env.a || theme) {
+        if (theme || all) {
             themefolders.push("custom");
         }
 
@@ -39,7 +37,7 @@ var themes = (function(){
 
             fs.readdirSync(f).forEach(function(t){
 
-                if(theme && t!=theme) return;
+                if (theme && t!=theme) return;
 
                 var path = f+'/'+t, uikit = path + '/uikit.less', customizer = path + '/uikit-customizer.less';
                 if (!(fs.lstatSync(path).isDirectory() && fs.existsSync(uikit))) return;
@@ -48,6 +46,14 @@ var themes = (function(){
         });
 
         return list;
+    },
+
+    themes    = (function(){
+
+        var theme = gutil.env.t || gutil.env.theme || false,
+            all   = gutil.env.all || gutil.env.a || theme;
+
+        return getThemes( theme, all);
     })(),
 
     corejs = [
@@ -69,6 +75,18 @@ var themes = (function(){
         './src/js/core/tooltip.js'
     ];
 
+
+gulp.task('default', ['dist', 'build-docs', 'indexthemes'], function(done) {
+
+    if(gutil.env.p || gutil.env.prefix) {
+        runSequence('prefix', function(){
+            done();
+        });
+    } else {
+        done();
+    }
+});
+
 gulp.task('dist', ['dist-themes-core'], function(done) {
 
     runSequence('sass', 'dist-core-minify', 'dist-core-header', 'browser-reload', 'dist-bower-file', function(){
@@ -85,9 +103,6 @@ gulp.task('dist', ['dist-themes-core'], function(done) {
     });
 });
 
-gulp.task('default', ['dist', 'build-docs', 'indexthemes']);
-
-
 /*
  * development related tasks
  * ---------------------------------------------------------*/
@@ -95,28 +110,59 @@ gulp.task('browser-sync', function() {
     browserSync({
         server: {
             baseDir: "./",
-            startPath: "/tests"
+            startPath: "/tests",
+            middleware: function (req, res, next) {
+
+                var m, theme;
+
+                if (m = req.url.match(/dist\/css\/components\/(.*)\.css/)) {
+                    theme = m[1].split('.')[1] || 'default';
+                } else if (m = req.url.match(/dist\/css\/(.*)\.css/)) {
+                    theme = m[1].split('.')[1] || 'default';
+                }
+
+                if (theme) {
+
+                    if (!watchCache[theme]) {
+
+                        watchCache[theme] = new Promise(function(resolve){
+
+                            var tmp = themes;
+
+                            themes = getThemes(theme);
+
+                            runSequence('dist-themes-core', function(){
+                                themes = tmp;
+                                resolve();
+                            });
+                        });
+                    }
+
+                    watchCache[theme].then(function(){
+                        next();
+                    });
+
+                } else {
+                    next();
+                }
+
+            }
         }
     });
 });
 
-gulp.task('browser-reload', function () {
+gulp.task('browser-reload', function (done) {
+    watchCache = {};
     browserSync.reload();
+    done();
 });
 
-gulp.task('watch', ['browser-sync'], function(done) {
+gulp.task('watch', ['browser-sync', 'indexthemes'], function(done) {
 
-    watchfolders = ['src/**/*'];
+    watchfolders = ['src/**/*', 'themes/**/*', 'custom/**/*.less'];
 
-    themes.forEach(function(theme){
-        watchfolders.push(theme.path+'/*');
-    });
-
-    runSequence('dist-themes-core', function(){
-
-        gulp.watch(watchfolders, function(files) {
-            runSequence('dist-themes-core', 'browser-reload');
-        });
+    gulp.watch(watchfolders, function(files) {
+        runSequence('browser-reload');
     });
 });
 
@@ -127,7 +173,8 @@ gulp.task('help', function(done) {
         '-c, --clean': '',
         '-m, --min': '',
         '-a, --all': '',
-        '-t, --theme': ''
+        '-t, --theme': '',
+        '-p, --prefix': ''
     }) {
         console.log(p);
     }
@@ -154,6 +201,10 @@ gulp.task('dist-core-move', ['dist-clean'], function() {
 
 gulp.task('dist-core-minify', function(done) {
 
+    if (watchmode) {
+        return done();
+    }
+
     // minify css
     gulp.src(['!./dist/css/**/*.min.css', './dist/css/**/*.css']).pipe(rename({ suffix: '.min' })).pipe(minifycss()).pipe(gulp.dest('./dist/css')).on('end', function(){
 
@@ -164,7 +215,12 @@ gulp.task('dist-core-minify', function(done) {
     });
 });
 
-gulp.task('dist-core-header', function() {
+gulp.task('dist-core-header', function(done) {
+
+    if (watchmode) {
+        return done();
+    }
+
     return gulp.src(['./dist/**/*.css', './dist/**/*.js']).pipe(header("/*! <%= pkg.title %> <%= pkg.version %> | <%= pkg.homepage %> | (c) 2014 YOOtheme | MIT License */\n", { 'pkg' : pkg } )).pipe(gulp.dest('./dist/'));
 });
 
@@ -389,12 +445,17 @@ gulp.task('dist-themes-core', ['dist-themes'], function(done) {
     themes.forEach(function(theme) {
 
         var modifyVars = {
-            'global-image-path': ('"../'+theme.path+'/images"')
+            'global-image-path': ('"../../'+theme.path+'/images"')
         };
 
         promises.push(new Promise(function(resolve, reject){
 
-            gulp.src(theme.uikit).pipe(less({"modifyVars": modifyVars})).pipe(rename({ suffix: ('.'+theme.name) })).pipe(gulp.dest('./dist/css')).on('end', function(){
+            gulp.src(theme.uikit).pipe(less({"modifyVars": modifyVars}).on('error', function(error) {
+
+                gutil.log(gutil.colors.red('Error in ') + '\'' + gutil.colors.cyan(theme.uikit) + '\'\n', error.toString());
+                resolve();
+
+            })).pipe(rename({ suffix: ('.'+theme.name) })).pipe(gulp.dest('./dist/css')).on('end', function(){
 
                 if (theme.name == 'default') {
                     fs.renameSync('./dist/css/uikit.default.css', './dist/css/uikit.css');
@@ -430,7 +491,7 @@ gulp.task('indexthemes', function() {
 
     var data = [];
 
-    themes.forEach(function(theme) {
+    getThemes(false, true).forEach(function(theme) {
 
         var themepath = theme.path,
             theme     = {
@@ -463,6 +524,21 @@ gulp.task('indexthemes', function() {
     console.log(data.length+' themes found: ' + data.map(function(theme){ return theme.name;}).join(", "));
 
     fs.writeFileSync("themes.json", JSON.stringify(data, " ", 4));
+});
+
+gulp.task('prefix', function(done) {
+    var prefix = gutil.env.p || gutil.env.prefix || false;
+
+    if(!prefix) {
+        return done();
+    }
+
+    gutil.log("Replacing prefix 'uk' with '"+prefix+"'");
+
+    gulp.src(['./dist/**/*.css', './dist/**/*.less', './dist/**/*.scss'])
+        .pipe(replace(/(uk-([a-z\d\-]+))/g, prefix+'-$2'))
+        .pipe(gulp.dest('./dist'))
+        .on('end', done);
 });
 
 /*

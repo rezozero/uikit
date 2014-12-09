@@ -3,10 +3,13 @@
 //  Zepto.js may be freely distributed under the MIT license.
 
 ;(function($){
-  var touch = {},
-    touchTimeout, tapTimeout, swipeTimeout, longTapTimeout,
-    longTapDelay = 750,
-    gesture;
+
+  if ($.fn.swipeLeft) {
+    return;
+  }
+
+
+  var touch = {}, touchTimeout, tapTimeout, swipeTimeout, longTapTimeout, longTapDelay = 750, gesture;
 
   function swipeDirection(x1, x2, y1, y2) {
     return Math.abs(x1 - x2) >= Math.abs(y1 - y2) ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
@@ -47,7 +50,8 @@
     }
 
     $(document)
-      .bind('MSGestureEnd', function(e){
+      .on('MSGestureEnd gestureend', function(e){
+
         var swipeDirectionFromVelocity = e.originalEvent.velocityX > 1 ? 'Right' : e.originalEvent.velocityX < -1 ? 'Left' : e.originalEvent.velocityY > 1 ? 'Down' : e.originalEvent.velocityY < -1 ? 'Up' : null;
 
         if (swipeDirectionFromVelocity) {
@@ -55,11 +59,13 @@
           touch.el.trigger('swipe'+ swipeDirectionFromVelocity);
         }
       })
-      .on('touchstart MSPointerDown', function(e){
+      // MSPointerDown: for IE10
+      // pointerdown: for IE11
+      .on('touchstart MSPointerDown pointerdown', function(e){
 
         if(e.type == 'MSPointerDown' && !isPrimaryTouch(e.originalEvent)) return;
 
-        firstTouch = e.type == 'MSPointerDown' ? e : e.originalEvent.touches[0];
+        firstTouch = (e.type == 'MSPointerDown' || e.type == 'pointerdown') ? e : e.originalEvent.touches[0];
 
         now      = Date.now();
         delta    = now - (touch.last || now);
@@ -76,13 +82,18 @@
         longTapTimeout = setTimeout(longTap, longTapDelay);
 
         // adds the current touch contact for IE gesture recognition
-        if (gesture && e.type == 'MSPointerDown') gesture.addPointer(e.originalEvent.pointerId);
+        if (gesture && ( e.type == 'MSPointerDown' || e.type == 'pointerdown' || e.type == 'touchstart' ) ) {
+          gesture.addPointer(e.originalEvent.pointerId);
+        }
+
       })
-      .on('touchmove MSPointerMove', function(e){
+      // MSPointerMove: for IE10
+      // pointermove: for IE11
+      .on('touchmove MSPointerMove pointermove', function(e){
 
-        if(e.type == 'MSPointerMove' && !isPrimaryTouch(e.originalEvent)) return;
+        if (e.type == 'MSPointerMove' && !isPrimaryTouch(e.originalEvent)) return;
 
-        firstTouch = e.type == 'MSPointerMove' ? e : e.originalEvent.touches[0];
+        firstTouch = (e.type == 'MSPointerMove' || e.type == 'pointermove') ? e : e.originalEvent.touches[0];
 
         cancelLongTap();
         touch.x2 = firstTouch.pageX;
@@ -91,9 +102,11 @@
         deltaX += Math.abs(touch.x1 - touch.x2);
         deltaY += Math.abs(touch.y1 - touch.y2);
       })
-      .on('touchend MSPointerUp', function(e){
+      // MSPointerUp: for IE10
+      // pointerup: for IE11
+      .on('touchend MSPointerUp pointerup', function(e){
 
-        if(e.type == 'MSPointerUp' && !isPrimaryTouch(e.originalEvent)) return;
+        if (e.type == 'MSPointerUp' && !isPrimaryTouch(e.originalEvent)) return;
 
         cancelLongTap();
 

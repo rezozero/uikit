@@ -164,6 +164,21 @@
 
 &lt;div id="my-id" class="uk-panel uk-panel-box"&gt;...&lt;/div&gt;</code></pre>
 
+                            <h2 id="toggle-animations"><a href="#toggle-animations" class="uk-link-reset">Animations</a></h2>
+
+                            <p>The Toggle component allows you to add animations to items when toggling between them. Just add one of the <code>.uk-animation-*</code> classes from the <a href="animation.html">Animation component</a> to the <code>animation</code> parameter. The class will be applied to the in as well as the out animation. If you prefer a different out animation, just add another class.</p>
+
+                            <h3 class="tm-article-subtitle">Example</h3>
+
+                            <p><button class="uk-button" data-uk-toggle="{target:'#toggle5', animation:'uk-animation-slide-left, uk-animation-slide-bottom'}">Toggle</button></p>
+
+                            <div id="toggle5" class="uk-panel uk-panel-box">It's magic!</div>
+
+                            <h3 class="tm-article-subtitle">Markup</h3>
+
+<pre><code>&lt;button class="uk-button" data-uk-toggle="{target:'#my-id', animation:'uk-animation-slide-left, uk-animation-slide-bottom'}"&gt;...&lt;/button&gt;
+
+&lt;div id="my-id"&gt;...&lt;/div&gt;</code></pre>
 
                             <hr class="uk-article-divider">
 
@@ -195,6 +210,12 @@
                                             <td>string</td>
                                             <td>'uk-hidden'</td>
                                             <td>Class to toggle</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>animation</code></td>
+                                            <td>mixed</td>
+                                            <td>false</td>
+                                            <td>Any uk-animation class name.</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -244,6 +265,7 @@
                             <li><a href="documentation_create-a-style.html">Create a style</a></li>
                             <li><a href="documentation_customizer-json.html">Customizer.json</a></li>
                             <li><a href="documentation_javascript.html">JavaScript</a></li>
+                            <li><a href="documentation_custom-prefix.html">Custom prefix</a></li>
                         </ul>
                     </li>
                     <li class="uk-nav-header">Components</li>
@@ -322,6 +344,7 @@
                     </li>
                     <li class="uk-parent"><a href="#"><i class="uk-icon-folder-open"></i> Common</a>
                         <ul class="uk-nav-sub">
+                            <li><a href="addons_caption.html">Caption</a></li>
                             <li><a href="addons_form-advanced.html">Form advanced</a></li>
                             <li><a href="addons_form-file.html">Form file</a></li>
                             <li><a href="addons_form-password.html">Form password</a></li>
@@ -334,6 +357,7 @@
                             <li><a href="addons_autocomplete.html">Autocomplete</a></li>
                             <li><a href="addons_datepicker.html">Datepicker</a></li>
                             <li><a href="addons_htmleditor.html">HTML editor</a></li>
+                            <li><a href="addons_slideshow.html">Slideshow</a></li>
                             <li><a href="addons_notify.html">Notify</a></li>
                             <li><a href="addons_search.html">Search</a></li>
                             <li><a href="addons_nestable.html">Nestable</a></li>

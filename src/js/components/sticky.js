@@ -2,17 +2,19 @@
 
     var component;
 
-    if (jQuery && jQuery.UIkit) {
-        component = addon(jQuery, jQuery.UIkit);
+    if (jQuery && UIkit) {
+        component = addon(jQuery, UIkit);
     }
 
     if (typeof define == "function" && define.amd) {
         define("uikit-sticky", ["uikit"], function(){
-            return component || addon(jQuery, jQuery.UIkit);
+            return component || addon(jQuery, UIkit);
         });
     }
 
 })(function($, UI){
+
+    "use strict";
 
     var $win         = UI.$win,
         $doc         = UI.$doc,
@@ -24,16 +26,50 @@
             top          : 0,
             bottom       : 0,
             animation    : '',
-            clsinit      : 'uk-sticky-init',
-            clsactive    : 'uk-active',
+            clsinit      : '@-sticky-init',
+            clsactive    : '@-active',
             getWidthFrom : '',
             media        : false,
             target       : false
         },
 
+        boot: function() {
+
+            // should be more efficient than using $win.scroll(scroller):
+            UI.$doc.on('scrolling.uk.document', scroller);
+            UI.$win.on('resize orientationchange', UI.Utils.debounce(function() {
+
+                if (!sticked.length) return;
+
+                for (var i = 0; i < sticked.length; i++) {
+                    sticked[i].reset(true);
+                }
+
+                scroller();
+            }, 100));
+
+            // init code
+            UI.ready(function(context) {
+
+                setTimeout(function(){
+
+                    UI.$("[data-@-sticky]", context).each(function(){
+
+                        var $ele = UI.$(this);
+
+                        if(!$ele.data("sticky")) {
+                            UI.sticky($ele, UI.Utils.options($ele.attr('data-@-sticky')));
+                        }
+                    });
+
+                    scroller();
+                }, 0);
+            });
+        },
+
         init: function() {
 
-            var wrapper  = $('<div class="uk-sticky-placeholder"></div>').css({
+            var wrapper  = UI.$('<div class="@-sticky-placeholder"></div>').css({
                         'height' : this.element.css('position') != 'absolute' ? this.element.outerHeight() : '',
                         'float'  : this.element.css("float") != "none" ? this.element.css("float") : '',
                         'margin' : this.element.css("margin")
@@ -52,7 +88,7 @@
 
                     var finalize = function() {
                         this.element.css({"position":"", "top":"", "width":"", "left":"", "margin":"0"});
-                        this.element.removeClass([this.options.animation, 'uk-animation-reverse', this.options.clsactive].join(' '));
+                        this.element.removeClass([this.options.animation, '@-animation-reverse', this.options.clsactive].join(' '));
 
                         this.currentTop = null;
                         this.animate    = false;
@@ -67,7 +103,7 @@
                             finalize();
                         }).width(); // force redraw
 
-                        this.element.addClass(this.options.animation+' '+'uk-animation-reverse');
+                        this.element.addClass(this.options.animation+' '+'@-animation-reverse');
                     } else {
                         finalize();
                     }
@@ -92,7 +128,7 @@
 
                     var scrollTop      = $win.scrollTop(),
                         documentHeight = $doc.height(),
-                        dwh            = documentHeight - $win.height(),
+                        dwh            = documentHeight - window.innerHeight,
                         extra          = (scrollTop > dwh) ? dwh - scrollTop : 0,
                         elementTop     = this.wrapper.offset().top,
                         etse           = elementTop - this.options.top - extra;
@@ -203,36 +239,6 @@
 
     }
 
-    // should be more efficient than using $win.scroll(scroller):
-    $doc.on('uk-scroll', scroller);
-    $win.on('resize orientationchange', UI.Utils.debounce(function() {
 
-        if (!sticked.length) return;
-
-        for (var i = 0; i < sticked.length; i++) {
-            sticked[i].reset(true);
-        }
-
-        scroller();
-    }, 100));
-
-    // init code
-    UI.ready(function(context) {
-
-        setTimeout(function(){
-
-            $("[data-uk-sticky]", context).each(function(){
-
-                var $ele = $(this);
-
-                if(!$ele.data("sticky")) {
-                    UI.sticky($ele, UI.Utils.options($ele.attr('data-uk-sticky')));
-                }
-            });
-
-            scroller();
-        }, 0);
-    });
-
-    return $.fn.uksticky;
+    return UI.sticky;
 });

@@ -104,7 +104,7 @@
 
                             <p class="uk-article-lead">Create a fully responsive, fluid and nestable grid layout.</p>
 
-                            <p>The grid system of UIkit follows the mobile-first approach and accomodates up to 10 grid columns. It uses units with predefined classes inside each grid, which define the column width.</p>
+                            <p>The grid system of UIkit follows the mobile-first approach and accomodates up to 10 grid columns. It uses units with predefined classes inside each grid, which define the column width. It is also possible to combine the grid with classes from the <a href="addons_flex.html">Flex component</a>, although it works only in modern browsers.</p>
 
                             <hr class="uk-article-divider">
 
@@ -230,13 +230,13 @@
                             <h3 class="tm-article-subtitle">Example</h3>
 
                             <div class="tm-grid-truncate uk-text-center">
-                                <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.uk-panel'}">
+                                <div class="uk-grid" data-uk-grid-margin>
                                     <div class="uk-width-large-1-3 uk-width-medium-1-2"><div class="uk-panel uk-panel-box uk-panel-box-primary"><code>.uk-width-medium-1-2</code> <code>.uk-width-large-1-3</code></div></div>
                                     <div class="uk-width-large-1-3 uk-hidden-medium"><div class="uk-panel uk-panel-box"><code>.uk-hidden-medium</code> <code>.uk-width-large-1-3</code></div></div>
                                     <div class="uk-width-large-1-3 uk-width-medium-1-2"><div class="uk-panel uk-panel-box uk-panel-box-primary"><code>.uk-width-medium-1-2</code> <code>.uk-width-large-1-3</code></div></div>
                                 </div>
 
-                                <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.uk-panel'}">
+                                <div class="uk-grid" data-uk-grid-margin>
                                     <div class="uk-width-medium-1-3 uk-width-1-2"><div class="uk-panel uk-panel-box uk-panel-box-secondary"><code>.uk-width-1-2</code> <code>.uk-width-medium-1-3</code></div></div>
                                     <div class="uk-width-medium-1-3 uk-hidden-small"><div class="uk-panel uk-panel-box"><code>.uk-hidden-small</code> <code>.uk-width-medium-1-3</code></div></div>
                                     <div class="uk-width-medium-1-3 uk-width-1-2"><div class="uk-panel uk-panel-box uk-panel-box-secondary"><code>.uk-width-1-2</code> <code>.uk-width-medium-1-3</code></div></div>
@@ -382,7 +382,7 @@
 
                             <h2 id="match-column-heights"><a href="#match-column-heights" class="uk-link-reset">Match column heights</a></h2>
 
-                            <p>To match the height of grid columns, just add the <code>data-uk-grid-match</code> attribute to your grid. If your grid wraps into multiple rows, only grid columns within the same row are matched. To match grid columns accross all rows just use <code>data-uk-grid-match="{row: false}"</code>.<p>
+                            <p>The Grid component uses Flexbox, so the height of grid columns is matched automatically. To achieve the same effect in older browsers that don't support Flexbox, just add the <code>data-uk-grid-match</code> attribute to your grid. If your grid wraps into multiple rows, only grid columns within the same row are matched. To match grid columns accross all rows just use <code>data-uk-grid-match="{row: false}"</code>.<p>
 
                             <h3 class="tm-article-subtitle">Example</h3>
 
@@ -402,11 +402,11 @@
 
                             <h3>Match height of panels</h3>
 
-                            <p>If you want to match the heights of panels in a grid, just add the <code>{target:'.uk-panel'}</code> selector.</p>
+                            <p>If you want to match the heights of panels in a grid, just add the <code>.uk-grid-match</code> class. When using the data attribute, you need to add the <code>{target:'.uk-panel'}</code> selector.</p>
 
                             <h3 class="tm-article-subtitle">Example</h3>
 
-                            <div class="uk-grid" data-uk-grid-match="{target:'.uk-panel'}" data-uk-grid-margin>
+                            <div class="uk-grid uk-grid-match" data-uk-grid-match="{target:'.uk-panel'}" data-uk-grid-margin>
                                 <div class="uk-width-medium-1-3">
                                     <div class="uk-panel uk-panel-box">Lorem ipsum dolor sit amet.</div>
                                 </div>
@@ -420,7 +420,7 @@
 
                             <h3 class="tm-article-subtitle">Markup</h3>
 
-<pre><code>&lt;div class="uk-grid" data-uk-grid-match="{target:'.uk-panel'}"&gt;
+<pre><code>&lt;div class="uk-grid uk-grid-match" data-uk-grid-match="{target:'.uk-panel'}"&gt;
     &lt;div class="uk-width-medium-1-3"&gt;
         &lt;div class="uk-panel"&gt;...&lt;/div&gt;
     &lt;/div&gt;
@@ -630,6 +630,7 @@
                             <li><a href="documentation_create-a-style.html">Create a style</a></li>
                             <li><a href="documentation_customizer-json.html">Customizer.json</a></li>
                             <li><a href="documentation_javascript.html">JavaScript</a></li>
+                            <li><a href="documentation_custom-prefix.html">Custom prefix</a></li>
                         </ul>
                     </li>
                     <li class="uk-nav-header">Components</li>
@@ -708,6 +709,7 @@
                     </li>
                     <li class="uk-parent"><a href="#"><i class="uk-icon-folder-open"></i> Common</a>
                         <ul class="uk-nav-sub">
+                            <li><a href="addons_caption.html">Caption</a></li>
                             <li><a href="addons_form-advanced.html">Form advanced</a></li>
                             <li><a href="addons_form-file.html">Form file</a></li>
                             <li><a href="addons_form-password.html">Form password</a></li>
@@ -720,6 +722,7 @@
                             <li><a href="addons_autocomplete.html">Autocomplete</a></li>
                             <li><a href="addons_datepicker.html">Datepicker</a></li>
                             <li><a href="addons_htmleditor.html">HTML editor</a></li>
+                            <li><a href="addons_slideshow.html">Slideshow</a></li>
                             <li><a href="addons_notify.html">Notify</a></li>
                             <li><a href="addons_search.html">Search</a></li>
                             <li><a href="addons_nestable.html">Nestable</a></li>
